@@ -1,0 +1,5 @@
+[MASTER]
+ignore=microdi_test.py
+
+[FORMAT]
+max-line-length=120
