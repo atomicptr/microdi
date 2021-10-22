@@ -112,3 +112,27 @@ class TestMicroDI(unittest.TestCase):
         self.assertEqual(test_func(), 4)
         self.assertEqual(test_func(), 5)
         self.assertEqual(test_func(), 6)
+
+    def test_using_a_registered_class_normally(self):
+        @microdi.register("microdi.TestClass")
+        class TestClass:
+            def __init__(self):
+                self._value = "instance"
+
+            def instance_method(self):
+                return self._value
+
+            @staticmethod
+            def static_method():
+                return "static"
+
+            @classmethod
+            def class_method(cls):
+                return "class"
+
+        test = TestClass()
+        self.assertEqual(test.instance_method(), "instance")
+        self.assertEqual(test.static_method(), "static")
+        self.assertEqual(test.class_method(), "class")
+        self.assertEqual(TestClass.static_method(), "static")
+        self.assertEqual(TestClass.class_method(), "class")

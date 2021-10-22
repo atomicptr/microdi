@@ -16,6 +16,8 @@ as the name is changed.
 
  0. You just DO WHAT THE FUCK YOU WANT TO.
 """
+from functools import wraps
+from inspect import isclass
 from typing import Any, Callable, List
 
 _implementations = {}
@@ -47,6 +49,10 @@ def register(name: str, is_singleton=False) -> Callable:
             "is_singleton": is_singleton,
         }
 
+        if isclass(constructor):
+            return constructor
+
+        @wraps(constructor)
         def constructor_wrapper(*args: Any, **kwargs: Any) -> None:
             return constructor(*args, **kwargs)
 
@@ -66,6 +72,7 @@ def inject(**inject_kwargs: Any) -> Callable:
     """
 
     def inject_wrapper(inject_target_func: Callable) -> Callable:
+        @wraps(inject_target_func)
         def target_func_wrapper(*args: Any, **kwargs: Any) -> None:
             for key, name in inject_kwargs.items():
                 constructor_args = []
